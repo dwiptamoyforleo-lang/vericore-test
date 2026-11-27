@@ -3,42 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090b10">
+  <meta name="theme-color" content="#f4f5f9">
   <title>VERICORE | Email Verification</title>
   <style>
-    :root{color-scheme:dark;--bg:#090b10;--panel:#11151d;--line:#252c38;--muted:#8c96a8;--text:#f4f6fb;--accent:#c8ff4d;--danger:#ff7777}
+    :root{color-scheme:light;--bg:#f3f5fa;--panel:#fff;--panel2:#f7f8fc;--line:#e1e5ef;--muted:#687187;--text:#171b2b;--accent:#6258d9;--accent-contrast:#fff;--accent-soft:#6258d916;--danger:#c53d56;--shadow:0 24px 70px #29345b16}
+    :root[data-theme="dark"]{color-scheme:dark;--bg:#0b0d16;--panel:#141827;--panel2:#101422;--line:#293149;--muted:#9aa3ba;--text:#f3f4fb;--accent:#a69bff;--accent-contrast:#17142d;--accent-soft:#a69bff19;--danger:#ff8195;--shadow:0 24px 80px #0008}
+    @media(prefers-color-scheme:dark){:root[data-theme="system"]{color-scheme:dark;--bg:#0b0d16;--panel:#141827;--panel2:#101422;--line:#293149;--muted:#9aa3ba;--text:#f3f4fb;--accent:#a69bff;--accent-contrast:#17142d;--accent-soft:#a69bff19;--danger:#ff8195;--shadow:0 24px 80px #0008}}
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#1a2430 0%,#0b0e14 48%,var(--bg) 100%);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;display:grid;place-items:center;padding:24px}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--accent) 10%,var(--bg)) 0%,var(--bg) 58%);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;display:grid;place-items:center;padding:24px;transition:background .2s,color .2s}
     .wrap{width:min(100%,460px)}
-    .brand{display:flex;align-items:center;gap:11px;margin:0 0 34px 2px;letter-spacing:.16em;font-size:13px;font-weight:800}
-    .mark{width:29px;height:29px;border:1px solid #56633c;border-radius:9px;display:grid;place-items:center;color:var(--accent);font-size:16px}
-    .card{background:linear-gradient(145deg,rgba(20,25,35,.97),rgba(13,17,24,.98));border:1px solid var(--line);border-radius:22px;padding:clamp(25px,6vw,38px);box-shadow:0 28px 90px #0008}
+    .topbar{display:flex;align-items:center;justify-content:space-between;margin:0 0 28px 2px}
+    .brand{display:flex;align-items:center;gap:11px;letter-spacing:.16em;font-size:13px;font-weight:800}
+    .mark{width:31px;height:31px;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:10px;display:grid;place-items:center;color:var(--accent);font-size:16px}
+    .theme-wrap{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;font-weight:700}
+    .theme-select{appearance:none;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);font:inherit;font-size:12px;padding:8px 28px 8px 10px;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23858ca2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:clamp(25px,6vw,38px);box-shadow:var(--shadow);transition:background .2s,border-color .2s}
     .eyebrow{color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin:0 0 13px}
     h1{font-size:clamp(28px,7vw,36px);line-height:1.12;letter-spacing:-.045em;margin:0 0 11px}
-    .sub{color:var(--muted);margin:0 0 29px;max-width:34ch}
-    label{display:block;font-size:12px;font-weight:700;color:#c4cad5;margin:0 0 9px}
-    input{width:100%;height:53px;border:1px solid #303948;border-radius:11px;background:#0b0f16;color:var(--text);padding:0 15px;font:inherit;outline:none;transition:border .2s,box-shadow .2s}
-    input:focus{border-color:#a7d747;box-shadow:0 0 0 3px #c8ff4d18}
-    input::placeholder{color:#606b7b}
-    button{width:100%;height:52px;border:0;border-radius:11px;background:var(--accent);color:#111609;font-family:inherit;font-weight:800;font-size:14px;letter-spacing:.02em;cursor:pointer;margin-top:15px;transition:transform .15s,filter .15s}
-    button:hover{filter:brightness(1.05);transform:translateY(-1px)}
-    button:disabled{opacity:.55;cursor:wait;transform:none}
+    .sub{color:var(--muted);margin:0 0 29px;max-width:35ch;overflow-wrap:anywhere}
+    label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 9px}
+    input{width:100%;height:53px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);padding:0 15px;font:inherit;outline:none;transition:border .2s,box-shadow .2s}
+    input:focus,.theme-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+    input::placeholder{color:var(--muted);opacity:.7}
+    button{width:100%;min-height:52px;border:0;border-radius:11px;background:var(--accent);color:var(--accent-contrast);font-family:inherit;font-weight:800;font-size:14px;letter-spacing:.01em;cursor:pointer;margin-top:15px;transition:transform .15s,filter .15s,background .2s}
+    button:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
+    button:disabled{opacity:.52;cursor:not-allowed;transform:none}
     .status{min-height:22px;margin:15px 0 0;color:var(--muted);font-size:12px}
     .status.error{color:var(--danger)}.status.success{color:var(--accent)}
     .hidden{display:none!important}
     .code{letter-spacing:.42em;text-align:center;font-size:22px;font-weight:700;padding-left:22px}
-    .again{background:transparent;color:var(--text);border:1px solid #394352;margin-top:12px}
+    .secondary{background:transparent;color:var(--text);border:1px solid var(--line)}
+    .resend-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px}
+    .resend-row button{width:auto;flex:1;margin:0;min-height:44px;font-size:12px}
+    .timer{font-size:11px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
     .success{text-align:center;padding:12px 0 2px}
-    .check{width:58px;height:58px;border-radius:50%;border:1px solid #627b34;background:#c8ff4d12;color:var(--accent);display:grid;place-items:center;font-size:28px;margin:0 auto 20px}
+    .check{width:58px;height:58px;border-radius:50%;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--line));background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:28px;margin:0 auto 20px}
     .success h1{color:var(--accent);margin-bottom:10px}
     .success p{color:var(--muted);margin:0}
-    .foot{color:#657082;font-size:11px;text-align:center;margin:18px 0 0}
-    @media(max-width:420px){body{padding:17px}.card{border-radius:18px}}
+    .foot{color:var(--muted);opacity:.8;font-size:11px;text-align:center;margin:18px 0 0}
+    @media(max-width:420px){body{padding:17px}.card{border-radius:18px}.theme-wrap>span{display:none}}
   </style>
 </head>
 <body>
   <main class="wrap">
-    <div class="brand"><span class="mark">V</span><span>VERICORE</span></div>
+    <header class="topbar">
+      <div class="brand"><span class="mark">V</span><span>VERICORE</span></div>
+      <label class="theme-wrap" for="themeSelect"><span>THEME</span>
+        <select class="theme-select" id="themeSelect" aria-label="Choose theme">
+          <option value="system">System</option><option value="dark">Dark</option><option value="light">Light</option>
+        </select>
+      </label>
+    </header>
     <section class="card" aria-live="polite">
       <div id="emailStep">
         <p class="eyebrow">Email verification / 01</p>
@@ -47,7 +62,7 @@
         <form id="emailForm">
           <label for="email">Email address</label>
           <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required maxlength="254">
-          <button id="goButton" type="submit">Go</button>
+          <button id="goButton" type="submit">Send code</button>
         </form>
       </div>
       <div id="codeStep" class="hidden">
@@ -59,7 +74,11 @@
           <input id="code" class="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" pattern="[0-9]{6}" minlength="6" maxlength="6" required>
           <button id="verifyButton" type="submit">Verify code</button>
         </form>
-        <button id="backButton" class="again" type="button">Use another email</button>
+        <div class="resend-row">
+          <button id="resendButton" class="secondary" type="button" disabled>Resend code</button>
+          <span id="resendTimer" class="timer" aria-live="off">Available in 01:00</span>
+        </div>
+        <button id="backButton" class="secondary" type="button">Use another email</button>
       </div>
       <div id="successStep" class="success hidden">
         <div class="check">✓</div>
@@ -73,11 +92,26 @@
     <p class="foot">VERICORE · Secure one-time email verification</p>
   </main>
   <script>
-    // Public API address only. Never put Gmail credentials or other secrets in this file.
     const API_BASE = "https://vericore.journey-home-verify.workers.dev";
     const $ = (id) => document.getElementById(id);
     let challengeId = null;
     let currentEmail = "";
+    let resendUntil = 0;
+    let resendInterval = null;
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      $("themeSelect").value = theme;
+      const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.querySelector('meta[name="theme-color"]').content = dark ? "#0b0d16" : "#f3f5fa";
+    }
+    const savedTheme = "system";
+    $("themeSelect").value = savedTheme;
+    applyTheme(savedTheme);
+    $("themeSelect").addEventListener("change", () => applyTheme($("themeSelect").value));
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      if ($("themeSelect").value === "system") applyTheme("system");
+    });
 
     function show(step) {
       $("emailStep").classList.toggle("hidden", step !== "email");
@@ -100,6 +134,20 @@
       if (!response.ok) throw new Error(data.error || "Request failed. Please try again.");
       return data;
     }
+    function startResendTimer() {
+      resendUntil = Date.now() + 60000;
+      clearInterval(resendInterval);
+      updateResendTimer();
+      resendInterval = setInterval(updateResendTimer, 250);
+    }
+    function updateResendTimer() {
+      const remaining = Math.max(0, Math.ceil((resendUntil - Date.now()) / 1000));
+      const minutes = String(Math.floor(remaining / 60)).padStart(2, "0");
+      const seconds = String(remaining % 60).padStart(2, "0");
+      $("resendTimer").textContent = remaining ? "Available in " + minutes + ":" + seconds : "You can request a new code";
+      $("resendButton").disabled = remaining > 0;
+      if (!remaining) clearInterval(resendInterval);
+    }
 
     $("emailForm").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -117,13 +165,36 @@
         $("sentTo").textContent = email;
         $("code").value = "";
         show("code");
-        setStatus("Code sent. Check your inbox.", "success");
+        startResendTimer();
+        setStatus("Check your inbox or spam.", "success");
         $("code").focus();
       } catch (error) {
         setStatus(error.message || "Could not send the code.", "error");
       } finally {
         button.disabled = false;
-        button.textContent = "Go";
+        button.textContent = "Send code";
+      }
+    });
+
+    $("resendButton").addEventListener("click", async () => {
+      if (!currentEmail || Date.now() < resendUntil) return;
+      const button = $("resendButton");
+      button.disabled = true;
+      button.textContent = "Sending…";
+      setStatus("Sending a new verification code…");
+      try {
+        const result = await post("/api/send-code", { email: currentEmail });
+        if (!result.challengeId) throw new Error("The server response was incomplete.");
+        challengeId = result.challengeId;
+        $("code").value = "";
+        startResendTimer();
+        setStatus("New code sent. Check your inbox or spam.", "success");
+      } catch (error) {
+        setStatus(error.message || "Could not resend the code.", "error");
+        updateResendTimer();
+        if (Date.now() >= resendUntil) button.disabled = false;
+      } finally {
+        button.textContent = "Resend code";
       }
     });
 
@@ -140,6 +211,7 @@
       setStatus("Checking your code…");
       try {
         await post("/api/verify-code", { challengeId, code });
+        clearInterval(resendInterval);
         show("success");
       } catch (error) {
         setStatus(error.message || "That code could not be verified.", "error");
@@ -150,8 +222,10 @@
     });
 
     function restart() {
+      clearInterval(resendInterval);
       challengeId = null;
       currentEmail = "";
+      resendUntil = 0;
       $("email").value = "";
       $("code").value = "";
       show("email");

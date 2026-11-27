@@ -1,128 +1,972 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="system">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f4f5f9">
+  <meta name="theme-color" content="#f6f7f9">
+  <meta name="description" content="VERICORE one-time email verification portal.">
   <title>VERICORE | Email Verification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{color-scheme:light;--bg:#f3f5fa;--panel:#fff;--panel2:#f7f8fc;--line:#e1e5ef;--muted:#687187;--text:#171b2b;--accent:#6258d9;--accent-contrast:#fff;--accent-soft:#6258d916;--danger:#c53d56;--shadow:0 24px 70px #29345b16}
-    :root[data-theme="dark"]{color-scheme:dark;--bg:#0b0d16;--panel:#141827;--panel2:#101422;--line:#293149;--muted:#9aa3ba;--text:#f3f4fb;--accent:#a69bff;--accent-contrast:#17142d;--accent-soft:#a69bff19;--danger:#ff8195;--shadow:0 24px 80px #0008}
-    @media(prefers-color-scheme:dark){:root[data-theme="system"]{color-scheme:dark;--bg:#0b0d16;--panel:#141827;--panel2:#101422;--line:#293149;--muted:#9aa3ba;--text:#f3f4fb;--accent:#a69bff;--accent-contrast:#17142d;--accent-soft:#a69bff19;--danger:#ff8195;--shadow:0 24px 80px #0008}}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--accent) 10%,var(--bg)) 0%,var(--bg) 58%);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;display:grid;place-items:center;padding:24px;transition:background .2s,color .2s}
-    .wrap{width:min(100%,460px)}
-    .topbar{display:flex;align-items:center;justify-content:space-between;margin:0 0 28px 2px}
-    .brand{display:flex;align-items:center;gap:11px;letter-spacing:.16em;font-size:13px;font-weight:800}
-    .mark{width:31px;height:31px;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:10px;display:grid;place-items:center;color:var(--accent);font-size:16px}
-    .theme-wrap{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;font-weight:700}
-    .theme-select{appearance:none;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);font:inherit;font-size:12px;padding:8px 28px 8px 10px;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23858ca2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:clamp(25px,6vw,38px);box-shadow:var(--shadow);transition:background .2s,border-color .2s}
-    .eyebrow{color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin:0 0 13px}
-    h1{font-size:clamp(28px,7vw,36px);line-height:1.12;letter-spacing:-.045em;margin:0 0 11px}
-    .sub{color:var(--muted);margin:0 0 29px;max-width:35ch;overflow-wrap:anywhere}
-    label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 9px}
-    input{width:100%;height:53px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);padding:0 15px;font:inherit;outline:none;transition:border .2s,box-shadow .2s}
-    input:focus,.theme-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-    input::placeholder{color:var(--muted);opacity:.7}
-    button{width:100%;min-height:52px;border:0;border-radius:11px;background:var(--accent);color:var(--accent-contrast);font-family:inherit;font-weight:800;font-size:14px;letter-spacing:.01em;cursor:pointer;margin-top:15px;transition:transform .15s,filter .15s,background .2s}
-    button:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
-    button:disabled{opacity:.52;cursor:not-allowed;transform:none}
-    .status{min-height:22px;margin:15px 0 0;color:var(--muted);font-size:12px}
-    .status.error{color:var(--danger)}.status.success{color:var(--accent)}
-    .hidden{display:none!important}
-    .code{letter-spacing:.42em;text-align:center;font-size:22px;font-weight:700;padding-left:22px}
-    .secondary{background:transparent;color:var(--text);border:1px solid var(--line)}
-    .resend-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px}
-    .resend-row button{width:auto;flex:1;margin:0;min-height:44px;font-size:12px}
-    .timer{font-size:11px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-    .success-step{text-align:center;padding:12px 0 2px}
-    .check{width:58px;height:58px;border-radius:50%;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--line));background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:28px;margin:0 auto 20px}
-    .success h1{color:var(--accent);margin-bottom:10px}
-    .success p{color:var(--muted);margin:0}
-    .foot{color:var(--muted);opacity:.8;font-size:11px;text-align:center;margin:18px 0 0}
-    @media(max-width:420px){body{padding:17px}.card{border-radius:18px}.theme-wrap>span{display:none}}
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --canvas-text: #0f172a;
+      --canvas-muted: #475569;
+      --canvas-kicker: #1d4ed8;
+      --canvas-step-active: #1d4ed8;
+      --canvas-step-done: #15803d;
+      --canvas-border: #dde2ea;
+      --topbar-bg: #ffffff;
+      --topbar-text: #0f172a;
+      --topbar-border: #dde2ea;
+      --topbar-mark: #1d4ed8;
+      --seg-bg: #eff2f6;
+      --seg-border: #dde2ea;
+      --seg-text: #475569;
+      --seg-active-bg: #ffffff;
+      --seg-active-text: #0f172a;
+      --seg-active-border: #dde2ea;
+      --surface: #ffffff;
+      --surface-subtle: #eff2f6;
+      --border: #dde2ea;
+      --border-strong: #c2cbd8;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --input-bg: #f6f7f9;
+      --input-focus-bg: #ffffff;
+      --input-text: #0f172a;
+      --input-placeholder: #64748b;
+      --input-border: #c2cbd8;
+      --secondary-bg: transparent;
+      --secondary-hover: #eff2f6;
+      --secondary-text: #0f172a;
+      --secondary-border: #c2cbd8;
+      --accent: #1d4ed8;
+      --accent-hover: #1e40af;
+      --accent-text: #1d4ed8;
+      --accent-contrast: #ffffff;
+      --accent-border: transparent;
+      --accent-soft: rgba(29, 78, 216, 0.08);
+      --highlight: #1d4ed8;
+      --success: #15803d;
+      --success-soft: rgba(21, 128, 61, 0.09);
+      --danger: #b91c1c;
+      --danger-soft: rgba(185, 28, 28, 0.08);
+      --focus-ring: rgba(29, 78, 216, 0.25);
+      --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-body: "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #facc15;
+      --canvas-text: #050505;
+      --canvas-muted: #1f241f;
+      --canvas-kicker: #052e16;
+      --canvas-step-active: #050505;
+      --canvas-step-done: #052e16;
+      --canvas-border: rgba(5, 5, 5, 0.22);
+      --topbar-bg: #050505;
+      --topbar-text: #f3f7f4;
+      --topbar-border: #1e2821;
+      --topbar-mark: #facc15;
+      --seg-bg: #050505;
+      --seg-border: #050505;
+      --seg-text: #98a89d;
+      --seg-active-bg: #22c55e;
+      --seg-active-text: #050505;
+      --seg-active-border: #22c55e;
+      --surface: #facc15;
+      --surface-subtle: #050505;
+      --border: #050505;
+      --border-strong: #050505;
+      --text: #050505;
+      --text-muted: #1f241f;
+      --input-bg: #050505;
+      --input-focus-bg: #0b0e0c;
+      --input-text: #f3f7f4;
+      --input-placeholder: #98a89d;
+      --input-border: #050505;
+      --secondary-bg: #050505;
+      --secondary-hover: #141916;
+      --secondary-text: #f3f7f4;
+      --secondary-border: #050505;
+      --accent: #22c55e;
+      --accent-hover: #4ade80;
+      --accent-text: #052e16;
+      --accent-contrast: #050505;
+      --accent-border: #050505;
+      --accent-soft: rgba(5, 46, 22, 0.14);
+      --highlight: #052e16;
+      --success: #4ade80;
+      --success-soft: #052e16;
+      --danger: #fca5a5;
+      --danger-soft: #050505;
+      --focus-ring: rgba(5, 46, 22, 0.35);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme="system"] {
+        color-scheme: dark;
+        --bg: #facc15;
+        --canvas-text: #050505;
+        --canvas-muted: #1f241f;
+        --canvas-kicker: #052e16;
+        --canvas-step-active: #050505;
+        --canvas-step-done: #052e16;
+        --canvas-border: rgba(5, 5, 5, 0.22);
+        --topbar-bg: #050505;
+        --topbar-text: #f3f7f4;
+        --topbar-border: #1e2821;
+        --topbar-mark: #facc15;
+        --seg-bg: #050505;
+        --seg-border: #050505;
+        --seg-text: #98a89d;
+        --seg-active-bg: #22c55e;
+        --seg-active-text: #050505;
+        --seg-active-border: #22c55e;
+        --surface: #facc15;
+        --surface-subtle: #050505;
+        --border: #050505;
+        --border-strong: #050505;
+        --text: #050505;
+        --text-muted: #1f241f;
+        --input-bg: #050505;
+        --input-focus-bg: #0b0e0c;
+        --input-text: #f3f7f4;
+        --input-placeholder: #98a89d;
+        --input-border: #050505;
+        --secondary-bg: #050505;
+        --secondary-hover: #141916;
+        --secondary-text: #f3f7f4;
+        --secondary-border: #050505;
+        --accent: #22c55e;
+        --accent-hover: #4ade80;
+        --accent-text: #052e16;
+        --accent-contrast: #050505;
+        --accent-border: #050505;
+        --accent-soft: rgba(5, 46, 22, 0.14);
+        --highlight: #052e16;
+        --success: #4ade80;
+        --success-soft: #052e16;
+        --danger: #fca5a5;
+        --danger-soft: #050505;
+        --focus-ring: rgba(5, 46, 22, 0.35);
+      }
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 180ms var(--ease), color 180ms var(--ease);
+    }
+
+    :root[data-theme="dark"] body {
+      letter-spacing: 0.005em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme="system"] body {
+        letter-spacing: 0.005em;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    /* Top Bar Contract: 1-row, 3-zone */
+    .topbar {
+      border-bottom: 1px solid var(--topbar-border);
+      background-color: var(--topbar-bg);
+      color: var(--topbar-text);
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      color: var(--topbar-mark);
+      flex-shrink: 0;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      min-height: calc(100vh - 69px);
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Primary Split Workspace */
+    .workspace {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 48px;
+      align-items: stretch;
+    }
+
+    .rail {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 8px 0;
+      color: var(--canvas-text);
+    }
+
+    .rail-kicker {
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--canvas-kicker);
+    }
+
+    .rail-title {
+      margin: 0 0 16px;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.4vw, 2.85rem);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+      color: var(--canvas-text);
+    }
+
+    .rail-desc {
+      margin: 0;
+      max-width: 44ch;
+      color: var(--canvas-muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    /* Step Rail */
+    .steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--canvas-border);
+    }
+
+    .step-item {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 12px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--canvas-border);
+      opacity: 0.68;
+      transition: opacity 180ms var(--ease);
+    }
+
+    .step-item.is-active,
+    .step-item.is-done {
+      opacity: 1;
+    }
+
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--canvas-muted);
+      padding-top: 2px;
+    }
+
+    .step-item.is-active .step-num {
+      color: var(--canvas-step-active);
+    }
+
+    .step-item.is-done .step-num {
+      color: var(--canvas-step-done);
+    }
+
+    .step-name {
+      margin: 0 0 2px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--canvas-text);
+    }
+
+    .step-note {
+      margin: 0;
+      font-size: 13px;
+      color: var(--canvas-muted);
+    }
+
+    /* Theme Control */
+    .theme-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 4px;
+    }
+
+    .theme-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--canvas-muted);
+    }
+
+    .segmented {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background-color: var(--seg-bg);
+      border: 1px solid var(--seg-border);
+      border-radius: 10px;
+    }
+
+    .segmented button {
+      min-height: 36px;
+      padding: 6px 14px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--seg-text);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease);
+    }
+
+    .segmented button:not([aria-checked="true"]):hover {
+      color: var(--topbar-text);
+    }
+
+    .segmented button[aria-checked="true"] {
+      background-color: var(--seg-active-bg);
+      color: var(--seg-active-text);
+      border: 1px solid var(--seg-active-border);
+    }
+
+    .segmented button:focus-visible {
+      outline: 2px solid var(--highlight);
+      outline-offset: 1px;
+    }
+
+    /* Primary Verification Console */
+    .console {
+      background-color: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: clamp(24px, 4vw, 44px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .panel-kicker {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--highlight);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .panel-title {
+      margin: 0 0 10px;
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 2.4vw, 2rem);
+      font-weight: 600;
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      text-wrap: balance;
+    }
+
+    .panel-sub {
+      margin: 0 0 28px;
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 46ch;
+      overflow-wrap: anywhere;
+    }
+
+    .panel-sub strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .field-group {
+      margin-bottom: 20px;
+    }
+
+    .field-label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .text-input {
+      width: 100%;
+      height: 52px;
+      padding: 0 16px;
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      background-color: var(--input-bg);
+      color: var(--input-text);
+      font-size: 15px;
+      transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease), background-color 150ms var(--ease);
+    }
+
+    .text-input::placeholder {
+      color: var(--input-placeholder);
+      opacity: 0.85;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--highlight);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+      background-color: var(--input-focus-bg);
+    }
+
+    /* 6-Digit Segmented OTP Input */
+    .otp-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .otp-cell {
+      width: 100%;
+      height: 60px;
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      background-color: var(--input-bg);
+      color: var(--input-text);
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+      transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease), background-color 150ms var(--ease), transform 150ms var(--ease);
+    }
+
+    .otp-cell:focus {
+      outline: none;
+      border-color: var(--highlight);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+      background-color: var(--input-focus-bg);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 24px;
+      border: 1.5px solid var(--accent-border);
+      border-radius: 10px;
+      background-color: var(--accent);
+      color: var(--accent-contrast);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 150ms var(--ease), transform 150ms var(--ease), opacity 150ms var(--ease);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-primary:focus-visible {
+      outline: 2px solid var(--highlight);
+      outline-offset: 2px;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.52;
+      cursor: not-allowed;
+    }
+
+    .secondary-actions {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--canvas-border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .resend-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      min-height: 40px;
+      padding: 8px 16px;
+      border: 1px solid var(--secondary-border);
+      border-radius: 8px;
+      background-color: var(--secondary-bg);
+      color: var(--secondary-text);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background-color 150ms var(--ease), border-color 150ms var(--ease), opacity 150ms var(--ease);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--secondary-hover);
+      border-color: var(--text);
+    }
+
+    .btn-secondary:focus-visible {
+      outline: 2px solid var(--highlight);
+      outline-offset: 2px;
+    }
+
+    .btn-secondary:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+
+    .timer {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Success Step */
+    .success-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background-color: var(--success-soft);
+      border: 1.5px solid var(--border);
+      color: var(--success);
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+    }
+
+    .verified-email-box {
+      margin: 0 0 24px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      background-color: var(--input-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .verified-email-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--input-placeholder);
+      white-space: nowrap;
+    }
+
+    .verified-email-value {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--input-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Status Alert */
+    .status-banner {
+      margin-top: 20px;
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 150ms var(--ease);
+    }
+
+    .status-banner.is-visible {
+      opacity: 1;
+    }
+
+    .status-banner.is-info {
+      background-color: var(--surface-subtle);
+      border-color: var(--border);
+      color: var(--input-text);
+    }
+
+    .status-banner.is-success {
+      background-color: var(--success-soft);
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .status-banner.is-error {
+      background-color: var(--danger-soft);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .status-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 960px) {
+      .container {
+        min-height: auto;
+        display: block;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner {
+        padding: 0 16px;
+        gap: 12px;
+      }
+
+      .container {
+        padding: 28px 16px 40px;
+      }
+
+      .otp-grid {
+        gap: 6px;
+      }
+
+      .otp-cell {
+        height: 52px;
+        font-size: 19px;
+      }
+
+      .secondary-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .resend-cluster {
+        justify-content: space-between;
+      }
+
+      .theme-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <header class="topbar">
-      <div class="brand"><span class="mark">V</span><span>VERICORE</span></div>
-      <label class="theme-wrap" for="themeSelect"><span>THEME</span>
-        <select class="theme-select" id="themeSelect" aria-label="Choose theme">
-          <option value="system">System</option><option value="dark">Dark</option><option value="light">Light</option>
-        </select>
-      </label>
-    </header>
-    <section class="card" aria-live="polite">
-      <div id="emailStep">
-        <p class="eyebrow">Email verification / 01</p>
-        <h1>Verify your email.</h1>
-        <p class="sub">Enter your email address. We’ll send you a one-time verification code.</p>
-        <form id="emailForm">
-          <label for="email">Email address</label>
-          <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required maxlength="254">
-          <button id="goButton" type="submit">Send code</button>
-        </form>
-      </div>
-      <div id="codeStep" class="hidden">
-        <p class="eyebrow">Email verification / 02</p>
-        <h1>Check your inbox.</h1>
-        <p class="sub">Enter the 6-digit code sent to <strong id="sentTo"></strong>.</p>
-        <form id="codeForm">
-          <label for="code">Verification code</label>
-          <input id="code" class="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" pattern="[0-9]{6}" minlength="6" maxlength="6" required>
-          <button id="verifyButton" type="submit">Verify code</button>
-        </form>
-        <div class="resend-row">
-          <button id="resendButton" class="secondary" type="button" disabled>Resend code</button>
-          <span id="resendTimer" class="timer" aria-live="off">Available in 01:00</span>
+  <header class="topbar" id="top">
+    <div class="topbar-inner">
+      <a href="#top" class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M7.5 8.5L12 16L16.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>VERICORE</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="verification" class="workspace" aria-label="Email verification workspace">
+      <aside class="rail">
+        <div>
+          <p class="rail-kicker">One-Time Email Verification</p>
+          <h1 class="rail-title">Verify inbox ownership in three steps.</h1>
+          <p class="rail-desc">
+            Enter an email address to request a six-digit one-time verification code, confirm receipt from your inbox, and complete validation against the VERICORE endpoint.
+          </p>
         </div>
-        <button id="backButton" class="secondary" type="button">Use another email</button>
+
+        <ol class="steps" aria-label="Verification progress">
+          <li id="railStep1" class="step-item is-active">
+            <span class="step-num">01</span>
+            <div>
+              <p class="step-name">Submit Email Address</p>
+              <p class="step-note">Request a one-time challenge for your inbox.</p>
+            </div>
+          </li>
+          <li id="railStep2" class="step-item">
+            <span class="step-num">02</span>
+            <div>
+              <p class="step-name">Enter 6-Digit Code</p>
+              <p class="step-note">Paste or type the verification code within the expiry window.</p>
+            </div>
+          </li>
+          <li id="railStep3" class="step-item">
+            <span class="step-num">03</span>
+            <div>
+              <p class="step-name">Verification Complete</p>
+              <p class="step-note">Receive confirmation or restart with another address.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="theme-bar">
+          <span class="theme-label" id="themeGroupLabel">Appearance</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="themeGroupLabel">
+            <button type="button" role="radio" data-theme-value="system" aria-checked="true">System</button>
+            <button type="button" role="radio" data-theme-value="dark" aria-checked="false">Dark</button>
+            <button type="button" role="radio" data-theme-value="light" aria-checked="false">Light</button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="console" aria-live="polite">
+        <!-- Step 1: Email Entry -->
+        <div id="emailStep">
+          <p class="panel-kicker">Step 1 of 3</p>
+          <h2 class="panel-title">Verify your email.</h2>
+          <p class="panel-sub">Enter your email address. We’ll send you a one-time verification code.</p>
+
+          <form id="emailForm">
+            <div class="field-group">
+              <label class="field-label" for="email">Email address</label>
+              <input
+                id="email"
+                class="text-input"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+                maxlength="254"
+              >
+            </div>
+            <button id="goButton" class="btn-primary" type="submit">Send code</button>
+          </form>
+        </div>
+
+        <!-- Step 2: Code Verification -->
+        <div id="codeStep" class="hidden">
+          <p class="panel-kicker">Step 2 of 3</p>
+          <h2 class="panel-title">Check your inbox.</h2>
+          <p class="panel-sub">Enter the 6-digit code sent to <strong id="sentTo"></strong>.</p>
+
+          <form id="codeForm" novalidate>
+            <div class="field-group">
+              <label class="field-label" for="otp-0">Verification code</label>
+              <div class="otp-grid" id="otpGrid" role="group" aria-label="6-digit verification code">
+                <input id="otp-0" class="otp-cell" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="Digit 1 of 6" required>
+                <input id="otp-1" class="otp-cell" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6" required>
+                <input id="otp-2" class="otp-cell" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6" required>
+                <input id="otp-3" class="otp-cell" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6" required>
+                <input id="otp-4" class="otp-cell" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6" required>
+                <input id="otp-5" class="otp-cell" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6" required>
+              </div>
+            </div>
+            <button id="verifyButton" class="btn-primary" type="submit">Verify code</button>
+          </form>
+
+          <div class="secondary-actions">
+            <div class="resend-cluster">
+              <button id="resendButton" class="btn-secondary" type="button" disabled>Resend code</button>
+              <span id="resendTimer" class="timer" aria-live="off">Available in 01:00</span>
+            </div>
+            <button id="backButton" class="btn-secondary" type="button">Use another email</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Success -->
+        <div id="successStep" class="hidden">
+          <div class="success-icon-wrap" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="panel-kicker">Step 3 of 3</p>
+          <h2 class="panel-title">It Works!</h2>
+          <p class="panel-sub">The email address was successfully verified.</p>
+
+          <div class="verified-email-box">
+            <span class="verified-email-label">Verified address</span>
+            <span id="verifiedEmailText" class="verified-email-value"></span>
+          </div>
+
+          <button id="againButton" class="btn-primary" type="button">Again</button>
+        </div>
+
+        <div id="status" class="status-banner" role="status" aria-live="polite">
+          <svg id="statusIcon" class="status-icon hidden" viewBox="0 0 20 20" fill="none" aria-hidden="true"></svg>
+          <span id="statusText"></span>
+        </div>
       </div>
-      <div id="successStep" class="success-step hidden">
-        <div class="check">✓</div>
-        <p class="eyebrow">Verification complete</p>
-        <h1>It Works!</h1>
-        <p>The email address was successfully verified.</p>
-        <button id="againButton" type="button">Again</button>
-      </div>
-      <p id="status" class="status" role="status" aria-live="polite"></p>
     </section>
-    <p class="foot">VERICORE · Secure one-time email verification</p>
   </main>
+
   <script>
     const API_BASE = "https://vericore.journey-home-verify.workers.dev";
     const $ = (id) => document.getElementById(id);
+
     let challengeId = null;
     let currentEmail = "";
     let resendUntil = 0;
     let resendInterval = null;
 
+    const themeButtons = Array.from(document.querySelectorAll("[data-theme-value]"));
+    const otpCells = Array.from(document.querySelectorAll(".otp-cell"));
+
+    function getSavedTheme() {
+      try {
+        const stored = localStorage.getItem("vericore-theme");
+        if (stored === "system" || stored === "dark" || stored === "light") return stored;
+      } catch {}
+      return "system";
+    }
+
     function applyTheme(theme) {
       document.documentElement.dataset.theme = theme;
-      $("themeSelect").value = theme;
+      try { localStorage.setItem("vericore-theme", theme); } catch {}
+      themeButtons.forEach((btn) => {
+        btn.setAttribute("aria-checked", String(btn.dataset.themeValue === theme));
+      });
       const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-      document.querySelector('meta[name="theme-color"]').content = dark ? "#0b0d16" : "#f3f5fa";
+      document.querySelector('meta[name="theme-color"]').content = dark ? "#050505" : "#f6f7f9";
     }
-    const savedTheme = "system";
-    $("themeSelect").value = savedTheme;
-    applyTheme(savedTheme);
-    $("themeSelect").addEventListener("change", () => applyTheme($("themeSelect").value));
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-      if ($("themeSelect").value === "system") applyTheme("system");
+
+    applyTheme(getSavedTheme());
+    themeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => applyTheme(btn.dataset.themeValue));
     });
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      if (document.documentElement.dataset.theme === "system") applyTheme("system");
+    });
+
+    function updateRail(step) {
+      const s1 = $("railStep1");
+      const s2 = $("railStep2");
+      const s3 = $("railStep3");
+
+      s1.className = "step-item " + (step === "email" ? "is-active" : "is-done");
+      s2.className = "step-item " + (step === "code" ? "is-active" : step === "success" ? "is-done" : "");
+      s3.className = "step-item " + (step === "success" ? "is-active is-done" : "");
+    }
 
     function show(step) {
       $("emailStep").classList.toggle("hidden", step !== "email");
       $("codeStep").classList.toggle("hidden", step !== "code");
       $("successStep").classList.toggle("hidden", step !== "success");
+      updateRail(step);
       setStatus("");
     }
+
+    const STATUS_ICONS = {
+      info: '<circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 9v4.5M10 6.5h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+      success: '<circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M6.8 10.2l2.1 2.1 4.3-4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+      error: '<circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 6.5v4.2M10 13.5h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
+    };
+
     function setStatus(message, kind = "") {
-      $("status").textContent = message;
-      $("status").className = "status" + (kind ? " " + kind : "");
+      const banner = $("status");
+      const icon = $("statusIcon");
+      const text = $("statusText");
+
+      if (!message) {
+        banner.className = "status-banner";
+        text.textContent = "";
+        icon.classList.add("hidden");
+        icon.innerHTML = "";
+        return;
+      }
+
+      const tone = kind === "error" ? "is-error" : kind === "success" ? "is-success" : "is-info";
+      banner.className = "status-banner is-visible " + tone;
+      text.textContent = message;
+      icon.innerHTML = STATUS_ICONS[kind] || STATUS_ICONS.info;
+      icon.classList.remove("hidden");
     }
+
     async function post(path, payload) {
       const response = await fetch(API_BASE + path, {
         method: "POST",
@@ -134,12 +978,14 @@
       if (!response.ok) throw new Error(data.error || "Request failed. Please try again.");
       return data;
     }
+
     function startResendTimer() {
       resendUntil = Date.now() + 60000;
       clearInterval(resendInterval);
       updateResendTimer();
       resendInterval = setInterval(updateResendTimer, 250);
     }
+
     function updateResendTimer() {
       const remaining = Math.max(0, Math.ceil((resendUntil - Date.now()) / 1000));
       const minutes = String(Math.floor(remaining / 60)).padStart(2, "0");
@@ -149,6 +995,68 @@
       if (!remaining) clearInterval(resendInterval);
     }
 
+    function clearOtp() {
+      otpCells.forEach((cell) => { cell.value = ""; });
+    }
+
+    function getOtpValue() {
+      return otpCells.map((cell) => cell.value.trim()).join("");
+    }
+
+    function fillOtpFromString(raw, startIndex = 0) {
+      const digits = raw.replace(/\D/g, "").slice(0, 6);
+      if (!digits) return;
+      if (digits.length > 1) {
+        for (let i = 0; i < 6; i++) {
+          otpCells[i].value = digits[i] || "";
+        }
+        const focusIdx = Math.min(digits.length, 5);
+        otpCells[focusIdx].focus();
+      } else {
+        otpCells[startIndex].value = digits;
+        if (startIndex < 5) otpCells[startIndex + 1].focus();
+      }
+    }
+
+    otpCells.forEach((cell, idx) => {
+      cell.addEventListener("input", (event) => {
+        const val = event.target.value;
+        const digits = val.replace(/\D/g, "");
+        if (!digits) {
+          event.target.value = "";
+          return;
+        }
+        if (digits.length > 1) {
+          fillOtpFromString(digits, 0);
+        } else {
+          event.target.value = digits;
+          if (idx < 5) otpCells[idx + 1].focus();
+        }
+      });
+
+      cell.addEventListener("keydown", (event) => {
+        if (event.key === "Backspace" && !cell.value && idx > 0) {
+          otpCells[idx - 1].value = "";
+          otpCells[idx - 1].focus();
+          event.preventDefault();
+        } else if (event.key === "ArrowLeft" && idx > 0) {
+          otpCells[idx - 1].focus();
+          event.preventDefault();
+        } else if (event.key === "ArrowRight" && idx < 5) {
+          otpCells[idx + 1].focus();
+          event.preventDefault();
+        }
+      });
+
+      cell.addEventListener("paste", (event) => {
+        const pasted = (event.clipboardData || window.clipboardData).getData("text");
+        if (pasted) {
+          event.preventDefault();
+          fillOtpFromString(pasted, idx);
+        }
+      });
+    });
+
     $("emailForm").addEventListener("submit", async (event) => {
       event.preventDefault();
       const email = $("email").value.trim();
@@ -156,18 +1064,18 @@
       const button = $("goButton");
       button.disabled = true;
       button.textContent = "Sending…";
-      setStatus("Requesting your verification code…");
+      setStatus("Requesting your verification code…", "info");
       try {
         const result = await post("/api/send-code", { email });
         if (!result.challengeId) throw new Error("The server response was incomplete.");
         challengeId = result.challengeId;
         currentEmail = email;
         $("sentTo").textContent = email;
-        $("code").value = "";
+        clearOtp();
         show("code");
         startResendTimer();
         setStatus("Check your inbox or spam.", "success");
-        $("code").focus();
+        otpCells[0].focus();
       } catch (error) {
         setStatus(error.message || "Could not send the code.", "error");
       } finally {
@@ -181,14 +1089,15 @@
       const button = $("resendButton");
       button.disabled = true;
       button.textContent = "Sending…";
-      setStatus("Sending a new verification code…");
+      setStatus("Sending a new verification code…", "info");
       try {
         const result = await post("/api/send-code", { email: currentEmail });
         if (!result.challengeId) throw new Error("The server response was incomplete.");
         challengeId = result.challengeId;
-        $("code").value = "";
+        clearOtp();
         startResendTimer();
         setStatus("New code sent. Check your inbox or spam.", "success");
+        otpCells[0].focus();
       } catch (error) {
         setStatus(error.message || "Could not resend the code.", "error");
         updateResendTimer();
@@ -200,18 +1109,21 @@
 
     $("codeForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      const code = $("code").value.trim();
+      const code = getOtpValue();
       if (!challengeId || !/^[0-9]{6}$/.test(code)) {
         setStatus("Enter the 6-digit code.", "error");
+        const firstEmpty = otpCells.find((c) => !c.value);
+        if (firstEmpty) firstEmpty.focus();
         return;
       }
       const button = $("verifyButton");
       button.disabled = true;
       button.textContent = "Checking…";
-      setStatus("Checking your code…");
+      setStatus("Checking your code…", "info");
       try {
         await post("/api/verify-code", { challengeId, code });
         clearInterval(resendInterval);
+        $("verifiedEmailText").textContent = currentEmail;
         show("success");
       } catch (error) {
         setStatus(error.message || "That code could not be verified.", "error");
@@ -227,10 +1139,12 @@
       currentEmail = "";
       resendUntil = 0;
       $("email").value = "";
-      $("code").value = "";
+      clearOtp();
       show("email");
+      $("verification").scrollIntoView({ behavior: "smooth", block: "start" });
       $("email").focus();
     }
+
     $("againButton").addEventListener("click", restart);
     $("backButton").addEventListener("click", restart);
   </script>
